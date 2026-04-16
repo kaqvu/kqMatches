@@ -32,33 +32,18 @@ function PageSkeleton() {
             <div className="h-6 bg-secondary/50 rounded w-1/2" />
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
-            <div className="w-full lg:w-auto order-2 lg:order-1 animate-pulse">
-              <div className="flex flex-col gap-3 md:gap-4">
-                <div className="h-6 bg-secondary/50 rounded w-20" />
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="h-4 bg-secondary/50 rounded w-16" />
-                    <div className="flex flex-wrap gap-2">
-                      <div className="h-9 bg-secondary/30 rounded-lg w-24" />
-                      <div className="h-9 bg-secondary/30 rounded-lg w-24" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="h-4 bg-secondary/50 rounded w-16" />
-                    <div className="flex flex-wrap gap-2">
-                      <div className="h-9 bg-secondary/30 rounded-lg w-24" />
-                    </div>
-                  </div>
-                </div>
+          <div className="animate-pulse">
+            <div className="mb-4 md:mb-6">
+              <div className="h-5 bg-secondary/50 rounded w-16 mb-3" />
+              <div className="flex flex-wrap gap-3">
+                <div className="h-12 bg-secondary/30 rounded-xl w-40" />
+                <div className="h-12 bg-secondary/30 rounded-xl w-32" />
               </div>
             </div>
 
-            <div className="flex-1 order-1 lg:order-2">
-              <div className="relative w-full animate-pulse" style={{ paddingBottom: '56.25%' }}>
-                <div className="absolute top-0 left-0 w-full h-full rounded-xl md:rounded-2xl bg-secondary/30 border border-border/30 flex items-center justify-center">
-                  <Loader2 className="w-12 h-12 text-primary animate-spin" />
-                </div>
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <div className="absolute top-0 left-0 w-full h-full rounded-xl md:rounded-2xl bg-secondary/30 border border-border/30 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-primary animate-spin" />
               </div>
             </div>
           </div>
@@ -161,9 +146,12 @@ export default function MatchPage() {
     if (selectedSourceGroup === groupName && selectedSourceIndex === index) return
     
     setIframeLoading(true)
-    setSelectedSourceGroup(groupName)
-    setSelectedSourceIndex(index)
-    router.push(`/match/${slug}/${groupName.toLowerCase()}/${index + 1}`, { scroll: false })
+    
+    setTimeout(() => {
+      setSelectedSourceGroup(groupName)
+      setSelectedSourceIndex(index)
+      router.push(`/match/${slug}/${groupName.toLowerCase()}/${index + 1}`, { scroll: false })
+    }, 150)
   }
 
   if (loading) {
@@ -270,33 +258,34 @@ export default function MatchPage() {
           </div>
 
           <div 
-            className={`flex flex-col lg:flex-row gap-4 md:gap-6 transition-all duration-700 delay-150 ease-out ${
+            className={`transition-all duration-700 delay-150 ease-out ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
             }`}
           >
-            <div className="w-full lg:w-auto order-2 lg:order-1">
-              <div className="flex flex-col gap-3 md:gap-4">
-                <h2 className="text-base md:text-lg font-bold text-foreground">Źródła</h2>
-                <div className="flex flex-col gap-4">
+            <div className="mb-4 md:mb-6">
+              <div className="flex flex-col gap-3">
+                <h2 className="text-sm md:text-base font-bold text-muted-foreground uppercase tracking-wider">Źródła</h2>
+                <div className="flex flex-wrap gap-3">
                   {match.sources.map((sourceGroup) => (
-                    <div key={sourceGroup.name} className="flex flex-col gap-2">
-                      <div className="text-xs md:text-sm font-bold text-primary tracking-[0.2em] uppercase">
+                    <div key={sourceGroup.name} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/30 border border-border/40">
+                      <span className="text-xs font-bold text-primary uppercase tracking-wider">
                         {sourceGroup.name}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
+                      </span>
+                      <div className="h-4 w-px bg-border/50" />
+                      <div className="flex gap-1.5">
                         {sourceGroup.urls.map((url, index) => {
                           const isActive = selectedSourceGroup === sourceGroup.name && selectedSourceIndex === index
                           return (
                             <button
                               key={`${sourceGroup.name}-${index}`}
                               onClick={() => handleSourceChange(sourceGroup.name, index)}
-                              className={`px-3 md:px-4 py-2 md:py-2.5 rounded-lg text-sm md:text-base font-medium transition-all duration-300 ease-out border touch-action-manipulation will-change-transform whitespace-nowrap ${
+                              className={`w-8 h-8 rounded-lg text-xs font-bold transition-all duration-200 touch-action-manipulation ${
                                 isActive
-                                  ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
-                                  : 'bg-secondary/50 border-border/50 text-foreground hover:bg-secondary hover:shadow-md active:scale-95'
+                                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30'
+                                  : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground active:scale-90'
                               }`}
                             >
-                              Źródło {index + 1}
+                              {index + 1}
                             </button>
                           )
                         })}
@@ -307,25 +296,26 @@ export default function MatchPage() {
               </div>
             </div>
 
-            <div className="flex-1 order-1 lg:order-2">
-              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                <div 
-                  className={`absolute top-0 left-0 w-full h-full rounded-xl md:rounded-2xl bg-secondary/30 border border-border/30 flex items-center justify-center transition-opacity duration-300 ${
-                    iframeLoading ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-                  }`}
-                >
-                  <Loader2 className="w-12 h-12 text-primary animate-spin" />
-                </div>
-                <iframe
-                  key={`${selectedSourceGroup}-${selectedSourceIndex}`}
-                  src={currentUrl}
-                  className="absolute top-0 left-0 w-full h-full rounded-xl md:rounded-2xl border border-border/30 bg-background transition-opacity duration-500"
-                  style={{ opacity: iframeLoading ? 0 : 1 }}
-                  allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  onLoad={() => setIframeLoading(false)}
-                />
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <div 
+                className={`absolute top-0 left-0 w-full h-full rounded-xl md:rounded-2xl bg-secondary/30 border border-border/30 flex items-center justify-center transition-opacity duration-500 ${
+                  iframeLoading ? 'opacity-100 z-20' : 'opacity-0 z-0 pointer-events-none'
+                }`}
+              >
+                <Loader2 className="w-12 h-12 text-primary animate-spin" />
               </div>
+              <iframe
+                key={`${selectedSourceGroup}-${selectedSourceIndex}`}
+                src={currentUrl}
+                className={`absolute top-0 left-0 w-full h-full rounded-xl md:rounded-2xl border border-border/30 bg-background transition-opacity duration-700 ${
+                  iframeLoading ? 'opacity-0' : 'opacity-100'
+                }`}
+                allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                onLoad={() => {
+                  setTimeout(() => setIframeLoading(false), 100)
+                }}
+              />
             </div>
           </div>
         </div>
