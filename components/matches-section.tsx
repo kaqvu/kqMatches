@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { Hash, AlertCircle, Search } from "lucide-react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 
 interface Match {
   id: string
@@ -28,6 +28,7 @@ function MatchSkeleton() {
 
 export function MatchesSection() {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const [mounted, setMounted] = useState(false)
   const [matches, setMatches] = useState<Match[]>([])
@@ -37,7 +38,8 @@ export function MatchesSection() {
   const observerRef = useRef<IntersectionObserver | null>(null)
   const [filterPopular, setFilterPopular] = useState(true)
   const [filterLive, setFilterLive] = useState(false)
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
+  const [searchQuery, setSearchQuery] = useState("")
+  const isInitialMount = useRef(true)
 
   const groupMatchesByDate = (matches: Match[]) => {
     const grouped: { [key: string]: Match[] } = {}
@@ -111,18 +113,19 @@ export function MatchesSection() {
   }, [filterPopular, filterLive])
 
   useEffect(() => {
-    const query = searchParams.get('search')
-    setSearchQuery(query || '')
+    const query = searchParams.get('search') || ''
+    setSearchQuery(query)
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+    }
   }, [searchParams])
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
-    const params = new URLSearchParams()
     if (value) {
-      params.set('search', value)
-      router.push(`/matches?${params.toString()}`, { scroll: false })
+      router.push(`${pathname}?search=${encodeURIComponent(value)}`, { scroll: false })
     } else {
-      router.push('/matches', { scroll: false })
+      router.push(pathname, { scroll: false })
     }
   }
 
