@@ -119,13 +119,13 @@ export function MatchesSection() {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams()
     if (value) {
       params.set('search', value)
+      router.push(`/matches?${params.toString()}`, { scroll: false })
     } else {
-      params.delete('search')
+      router.push('/matches', { scroll: false })
     }
-    router.push(`/matches?${params.toString()}`, { scroll: false })
   }
 
   const fetchMatches = async () => {
@@ -156,13 +156,13 @@ export function MatchesSection() {
   }
 
   useEffect(() => {
-    if (!loading && matches.length > 0) {
+    if (!loading && filteredMatches.length > 0) {
       const elements = document.querySelectorAll('[data-index]')
       elements.forEach((el) => {
         observerRef.current?.observe(el)
       })
     }
-  }, [loading, matches])
+  }, [loading, filteredMatches])
 
   const getTotalSources = (match: Match) => {
     return match.sources.length
