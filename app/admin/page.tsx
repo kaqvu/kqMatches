@@ -138,6 +138,10 @@ export default function AdminPage() {
       <>
         <div className="min-h-screen pt-24 md:pt-32 relative overflow-hidden">
           <div className="fixed inset-0 bg-gradient-to-b from-background via-background to-secondary/20 pointer-events-none" />
+          <div 
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[300px] md:h-[400px] opacity-[0.07] blur-[100px] pointer-events-none animate-pulse"
+            style={{ background: "var(--primary)", animationDuration: "4s" }}
+          />
           
           <section className="py-16 px-4 md:px-8 relative z-10">
             <div className="max-w-4xl mx-auto">
