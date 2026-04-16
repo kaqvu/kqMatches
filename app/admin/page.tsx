@@ -138,16 +138,12 @@ export default function AdminPage() {
       <>
         <div className="min-h-screen pt-24 md:pt-32 relative overflow-hidden">
           <div className="fixed inset-0 bg-gradient-to-b from-background via-background to-secondary/20 pointer-events-none" />
-          <div 
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[300px] md:h-[400px] opacity-[0.07] blur-[100px] pointer-events-none animate-pulse"
-            style={{ background: "var(--primary)", animationDuration: "4s" }}
-          />
           
           <section className="py-16 px-4 md:px-8 relative z-10">
             <div className="max-w-4xl mx-auto">
               <div 
-                className={`mb-12 md:mb-16 transition-all duration-700 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                className={`mb-12 md:mb-16 transition-all duration-500 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                 }`}
               >
                 <div className="mb-6">
@@ -172,8 +168,8 @@ export default function AdminPage() {
               </div>
             
               <div 
-                className={`transition-all duration-700 delay-150 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                className={`transition-all duration-500 delay-75 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                 }`}
               >
                 <div className="space-y-4">
@@ -244,8 +240,8 @@ export default function AdminPage() {
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div 
-            className={`mb-8 text-center transition-all duration-700 ease-out ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            className={`mb-8 text-center transition-all duration-500 ease-out ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
           >
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
@@ -258,8 +254,8 @@ export default function AdminPage() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div 
-              className={`rounded-2xl bg-secondary/20 border border-border/30 p-6 md:p-8 transition-all duration-700 delay-150 ease-out ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              className={`rounded-2xl bg-secondary/20 border border-border/30 p-6 md:p-8 transition-all duration-500 delay-75 ease-out ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
               }`}
             >
               <div className="space-y-4">
