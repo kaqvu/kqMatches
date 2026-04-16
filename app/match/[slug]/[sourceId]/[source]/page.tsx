@@ -99,7 +99,7 @@ export default function MatchPage() {
 
     const updateCountdown = () => {
       const now = Date.now()
-      const matchTime = match.date
+      const matchTime = match.date!
       const diff = matchTime - now
 
       if (diff <= 0) {
@@ -107,10 +107,16 @@ export default function MatchPage() {
         setTimeRemaining('')
       } else {
         setIsLive(false)
-        const hours = Math.floor(diff / (1000 * 60 * 60))
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
         const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-        setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`)
+        
+        if (days > 0) {
+          setTimeRemaining(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+        } else {
+          setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`)
+        }
       }
     }
 

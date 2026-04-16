@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { Hash, AlertCircle } from "lucide-react"
+import { Hash, AlertCircle, Search } from "lucide-react"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 
 interface Match {
   id: string
@@ -26,6 +27,8 @@ function MatchSkeleton() {
 }
 
 export function MatchesSection() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [mounted, setMounted] = useState(false)
   const [matches, setMatches] = useState<Match[]>([])
   const [loading, setLoading] = useState(true)
@@ -34,6 +37,7 @@ export function MatchesSection() {
   const observerRef = useRef<IntersectionObserver | null>(null)
   const [filterPopular, setFilterPopular] = useState(true)
   const [filterLive, setFilterLive] = useState(false)
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
 
   const groupMatchesByDate = (matches: Match[]) => {
     const grouped: { [key: string]: Match[] } = {}
@@ -106,6 +110,24 @@ export function MatchesSection() {
     }
   }, [filterPopular, filterLive])
 
+  useEffect(() => {
+    const query = searchParams.get('search')
+    if (query) {
+      setSearchQuery(query)
+    }
+  }, [searchParams])
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set('search', value)
+    } else {
+      params.delete('search')
+    }
+    router.push(`/matches?${params.toString()}`, { scroll: false })
+  }
+
   const fetchMatches = async () => {
     try {
       let url = '/api/matches'
@@ -146,6 +168,12 @@ export function MatchesSection() {
     return match.sources.length
   }
 
+  const filteredMatches = matches.filter(match => {
+    if (!searchQuery) return true
+    const query = searchQuery.toLowerCase()
+    return match.name.toLowerCase().includes(query)
+  })
+
   return (
     <section className="min-h-[80vh] py-16 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -157,31 +185,43 @@ export function MatchesSection() {
           <p className="text-primary text-xs md:text-sm font-medium tracking-[0.2em] uppercase mb-3 md:mb-4">
             Mecze
           </p>
-          <div className="flex items-start justify-between gap-4 mb-4 md:mb-6">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground tracking-tight">
-              Matches
-            </h1>
-            <div className="flex gap-2 mt-2">
-              <button
-                onClick={() => setFilterPopular(!filterPopular)}
-                className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 touch-action-manipulation ${
-                  filterPopular
-                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
-                    : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'
-                }`}
-              >
-                Popular
-              </button>
-              <button
-                onClick={() => setFilterLive(!filterLive)}
-                className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 touch-action-manipulation ${
-                  filterLive
-                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
-                    : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'
-                }`}
-              >
-                Live
-              </button>
+          <div className="flex flex-col gap-4 mb-4 md:mb-6">
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground tracking-tight">
+                Matches
+              </h1>
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={() => setFilterPopular(!filterPopular)}
+                  className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 touch-action-manipulation ${
+                    filterPopular
+                      ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                      : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'
+                  }`}
+                >
+                  Popular
+                </button>
+                <button
+                  onClick={() => setFilterLive(!filterLive)}
+                  className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 touch-action-manipulation ${
+                    filterLive
+                      ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                      : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'
+                  }`}
+                >
+                  Live
+                </button>
+              </div>
+            </div>
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                placeholder="Szukaj meczów..."
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/30 border border-border/40 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+              />
             </div>
           </div>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
@@ -214,6 +254,20 @@ export function MatchesSection() {
                 Spróbuj ponownie
               </button>
             </div>
+          ) : filteredMatches.length === 0 && searchQuery ? (
+            <div className="text-center py-12 px-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary/50 mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Brak wyników</h3>
+              <p className="text-muted-foreground mb-4">Nie znaleziono meczów dla &quot;{searchQuery}&quot;</p>
+              <button
+                onClick={() => handleSearchChange('')}
+                className="px-6 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 active:scale-95 transition-all duration-200 touch-action-manipulation"
+              >
+                Wyczyść wyszukiwanie
+              </button>
+            </div>
           ) : matches.length === 0 ? (
             <div className="text-center py-12 px-4">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary/50 mb-4">
@@ -224,7 +278,7 @@ export function MatchesSection() {
             </div>
           ) : (
             <div className="space-y-12">
-              {groupMatchesByDate(matches).map(([dateKey, dateMatches], groupIndex) => {
+              {groupMatchesByDate(filteredMatches).map(([dateKey, dateMatches], groupIndex) => {
                 const dateInfo = formatDateLabel(dateKey)
                 return (
                   <div key={dateKey}>
