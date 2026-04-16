@@ -239,11 +239,7 @@ export default function AdminPage() {
     <>
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-md">
-          <div 
-            className={`mb-8 text-center transition-all duration-500 ease-out ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-            }`}
-          >
+          <div className="mb-8 text-center">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
               Login
             </h1>
