@@ -112,9 +112,7 @@ export function MatchesSection() {
 
   useEffect(() => {
     const query = searchParams.get('search')
-    if (query) {
-      setSearchQuery(query)
-    }
+    setSearchQuery(query || '')
   }, [searchParams])
 
   const handleSearchChange = (value: string) => {
