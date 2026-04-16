@@ -50,10 +50,17 @@ export default function AdminPage() {
   }, [])
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true)
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     setMounted(false)
     const timer = setTimeout(() => {
       setMounted(true)
-    }, 150)
+    }, 50)
     return () => clearTimeout(timer)
   }, [isLoggedIn])
 
@@ -125,7 +132,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 opacity-100">
           <div className="w-12 h-12 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
           <p className="text-muted-foreground">Ładowanie...</p>
         </div>
