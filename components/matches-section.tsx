@@ -155,6 +155,12 @@ export function MatchesSection() {
     }
   }
 
+  const filteredMatches = matches.filter(match => {
+    if (!searchQuery) return true
+    const query = searchQuery.toLowerCase()
+    return match.name.toLowerCase().includes(query)
+  })
+
   useEffect(() => {
     if (!loading && filteredMatches.length > 0) {
       const elements = document.querySelectorAll('[data-index]')
@@ -167,12 +173,6 @@ export function MatchesSection() {
   const getTotalSources = (match: Match) => {
     return match.sources.length
   }
-
-  const filteredMatches = matches.filter(match => {
-    if (!searchQuery) return true
-    const query = searchQuery.toLowerCase()
-    return match.name.toLowerCase().includes(query)
-  })
 
   return (
     <section className="min-h-[80vh] py-16 px-4 md:px-8">
