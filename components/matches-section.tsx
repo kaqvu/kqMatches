@@ -122,6 +122,12 @@ export function MatchesSection() {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
+    const newUrl = value ? `${pathname}?search=${encodeURIComponent(value)}` : pathname
+    
+    // Aktualizuj URL natychmiast
+    window.history.replaceState(null, '', newUrl)
+    
+    // Następnie użyj router.push dla Next.js
     if (value) {
       router.push(`${pathname}?search=${encodeURIComponent(value)}`, { scroll: false })
     } else {

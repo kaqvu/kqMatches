@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     const response = await fetch('https://streamed.pk/api/matches/football', {
-      next: { revalidate: 60 }
+      cache: 'no-store'
     })
     
     if (!response.ok) {

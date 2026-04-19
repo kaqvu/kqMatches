@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     }
     
     const response = await fetch(apiUrl, {
-      next: { revalidate: 60 }
+      cache: 'no-store'
     })
     
     if (!response.ok) {

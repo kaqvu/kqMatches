@@ -8,7 +8,7 @@ export async function GET(
     const { slug } = await params
     
     const response = await fetch('https://streamed.pk/api/matches/football', {
-      next: { revalidate: 60 }
+      cache: 'no-store'
     })
     
     if (!response.ok) {
@@ -26,7 +26,7 @@ export async function GET(
       try {
         const streamResponse = await fetch(
           `https://streamed.pk/api/stream/${source.source}/${source.id}`,
-          { next: { revalidate: 60 } }
+          { cache: 'no-store' }
         )
         
         if (!streamResponse.ok) {
